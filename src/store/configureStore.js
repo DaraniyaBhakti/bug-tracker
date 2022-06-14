@@ -1,9 +1,9 @@
-import { createStore,applyMiddleware } from "redux";
+import { createStore, applyMiddleware } from "redux";
 //-----simple redux---------------
 // import reducer from "./reducer";
 
 //----ducks pattern---
-import {devToolsEnhancer} from "redux-devtools-extension";
+import { devToolsEnhancer } from "redux-devtools-extension";
 // import reducer from "./bug";
 // import reducer from './project';
 
@@ -17,7 +17,10 @@ import combineReducer from "./combineReducer";
 //---ducks pattern--
 
 import logger from "./middleware/logger";
-import { configureStore } from "@reduxjs/toolkit";
+import func from "./middleware/func";
+import toast from "./middleware/toast";
+import api from "./middleware/api";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 // export default function configureStore(){
 //     //individal reducer
 //     // const store = createStore(reducer);
@@ -30,9 +33,17 @@ import { configureStore } from "@reduxjs/toolkit";
 // }
 
 //middleware using reacths toolkit
-export default function(){
+export default function () {
     return configureStore({
-        reducer:combineReducer,
-        middleware:[logger({destination:"console"})]
+        reducer: combineReducer,
+        // middleware:[logger({destination:"console"}), func]
+
+        //thunk 
+        middleware: [
+            ...getDefaultMiddleware(),
+            logger({ destination: "console" }),
+            toast,
+            api
+        ]
     });
 }

@@ -6,9 +6,12 @@ import { StyleSheet, Text, View } from 'react-native';
 // import {bugAdded, bugRemoved, bugResolved} from './src/redux/actions';
 
 
-import {bugAdded,bugResolved,getUnresolvedBugs,getBugsByUser,bugAssignedToUser} from './src/store/bug';
+import {bugAdded,bugResolved,getUnresolvedBugs,getBugsByUser,bugAssignedToUser, resolveBug, assignBugToUser} from './src/store/bug';
 import {projectAdded} from './src/store/project';
 import { userAdded } from './src/store/user';
+
+import * as actions from './src/store/api';
+import {loadBugs,addBug} from './src/store/bug'; 
 
 import configureStore from './src/store/configureStore';
 import entities from './src/store/entities';
@@ -17,8 +20,55 @@ import entities from './src/store/entities';
 const store = configureStore();
 
 export default function App() {
-  
-  store.dispatch(userAdded({name:"User 1"}))
+
+  //action from reducers
+  store.dispatch(loadBugs());
+  setTimeout(() =>store.dispatch(loadBugs()))
+  setTimeout(() =>store.dispatch(resolveBug(1)), 2000)
+  setTimeout(() =>store.dispatch(assignBugToUser(1,1)), 2000)
+   
+  //api call using action of reactjs tolkit
+  // store.dispatch(actions.apiCallBegin({
+  //   url:'/bugs',
+  //   //to get
+  //   // onSuccess:"bugsReceived",
+  //   //to get bugs data using reducer
+  //   onSuccess:'bugs/bugsReceived'
+  //   // onError :actions.apiCallFailed.type
+  // }))
+
+  //define action to get api call
+  // store.dispatch({
+  //   type:"apiCallBegin",
+  //   payload:{
+  //     url:'/bugs',
+  //     onSuccess:'bugReceived',
+  //     onError :'apiRequestFailed'
+  //   }
+  // })
+  console.log(store.getState())
+
+
+  // for use of middleware
+  // store.dispatch((dispatch,getState)=>{
+  //   //call an API
+  //   //when the promise resolved => dispatch()
+  //   // dispatch({
+  //   //   type:'bugsReceived',
+  //   //   bugs:[1,2,3]
+  //   // } 
+
+  //   dispatch({
+  //     type:'error',
+  //     payload:{message:"An error occured"}
+  //   }
+  //   )
+  //   console.log(getState())
+    //if promise is rejected => dispatch()
+    // })
+
+
+  // store.dispatch(userAdded({name:"User 1"}))
   // store.dispatch(userAdded({name:"User 2"}))
 
   // store.dispatch(bugAdded({description:"Bug 1"}));
@@ -40,7 +90,7 @@ export default function App() {
   // console.log(x===y)
 
   // store.dispatch(projectAdded({name : "Project 1"}));
-  console.log(store.getState())
+  // console.log(store.getState())
 
   // store.subscribe(() => {
   //   console.log("Store changed");
